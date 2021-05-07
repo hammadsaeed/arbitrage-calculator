@@ -68,8 +68,6 @@ const PriceCalculator = (props) => {
 
         }
       })
-      console.log(matches)
-      console.log(higherDiff)
       setDiffPrice(higherDiff);
     }
   }, [bitMartPrice, pancakePrice])
