@@ -35,6 +35,24 @@ const getPancake = async (url) => {
   return { data };
 };
 
-const GetPrice = { getBitmart,getPancake };
+const getBinance = async (url) => {
+  const response = await fetch(url, {
+    method: 'GET',
+
+  });
+  if (!response.ok) {
+    if (response.status !== 404) {
+      throw new Error('Invalid response');
+    }
+    return null;
+  }
+
+  const json = await response.json();
+  const filterData = json.filter((item) => item.symbol.includes('USDT'))
+  console.log(filterData)
+  return { filterData };
+};
+
+const GetPrice = { getBitmart,getPancake, getBinance };
 
 export default GetPrice;
