@@ -8,6 +8,7 @@ const PriceCalculator = (props) => {
   const {handleLoading} = props;
   const [bitMartPrice, setBitmartPrice] = useState([]);
   const [pancakePrice, setPacncakePrice] = useState([]);
+
   const [diffPrice, setDiffPrice] = useState([]);
 
 
@@ -76,13 +77,19 @@ const PriceCalculator = (props) => {
     handleLoading();
     return (
       <>
+          <div style={{display: 'flex', flexDirection: 'row'}}>
+            <h6 style={{margin: 10, width: '15vw'}}>Name</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>Pancake price</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>Bitmart price</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>Percentage Diff</h6>
+          </div>
         {diffPrice.map((item) => {
           return(
           <div style={{display: 'flex', flexDirection: 'row'}}>
-            <h6 style={{margin: 10}}>{item.name}</h6>
-            <h6 style={{margin: 10}}>{item.pancakePrice}</h6>
-            <h6 style={{margin: 10}}>{item.bitmartPrice}</h6>
-            <h6 style={{margin: 10}}>{item.percentageDiff}%</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>{item.name}</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>{item.pancakePrice}</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>{item.bitmartPrice}</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>{parseInt(item.percentageDiff)}%</h6>
           </div>
           )
         })}
