@@ -37,52 +37,16 @@ const BinanceCalculator = (props) => {
     getData();
   }, [])
 
-  // useEffect(() => {
-  //   if(bitMartPrice.length && pancakePrice.length) {
-  //     const matches = [];
-  //     const higherDiff = [];
-  //     pancakePrice.map((pancakeItem) => {
-  //       for(let i = 0; i < bitMartPrice.length; i++) {          
-  //         // if(bitMartPrice[i].symbol.includes(pancakeItem.symbol.toUpperCase())) {
-  //         if(pancakeItem.symbol.toUpperCase() === bitMartPrice[i].symbol.split('_')[0] && bitMartPrice[i].symbol.split('_')[0] !== 'DIA') {
-  //           const panCakePriceItem = parseFloat(pancakeItem.price);
-  //           const bitMartPriceItem = parseFloat(bitMartPrice[i]['last_price']);
-  //           const percentageDiff = ((bitMartPriceItem/panCakePriceItem) * 100) - 100;
-  //           matches.push({
-  //             name: pancakeItem.name,
-  //             symbol: pancakeItem.symbol,
-  //             pancakePrice: parseFloat(pancakeItem.price),
-  //             bitmartPrice: parseFloat(bitMartPrice[i]['last_price']),
-  //             percentageDiff,
-  //           });
-  //           if(percentageDiff > 8) {
-  //             higherDiff.push({
-  //               name: pancakeItem.name,
-  //               symbol: pancakeItem.symbol,
-  //               pancakePrice: parseFloat(pancakeItem.price),
-  //               bitmartPrice: parseFloat(bitMartPrice[i]['last_price']),
-  //               percentageDiff,
-  //             });
-  //           }
-  //           break
-  //         }
-
-  //       }
-  //     })
-  //     setDiffPrice(higherDiff);
-  //   }
-  // }, [bitMartPrice, pancakePrice])
-
   useEffect(() => {
     if(binancePrice.length && pancakePrice.length) {
       const higherDiff = [];
+      // eslint-disable-next-line array-callback-return
       pancakePrice.map((pancakeItem) => {
         for(let i = 0; i < binancePrice.length; i++) {          
           if(pancakeItem.symbol.toUpperCase() === binancePrice[i].symbol.split('USD')[0] ) {
             const panCakePriceItem = parseFloat(pancakeItem.price);
             const binancePriceItem = parseFloat(binancePrice[i]['price']);
             const percentageDiff = ((binancePriceItem/panCakePriceItem) * 100) - 100;
-            console.log(binancePrice[i])
             if(percentageDiff > 8) {
               higherDiff.push({
                 name: pancakeItem.name,
@@ -97,8 +61,10 @@ const BinanceCalculator = (props) => {
 
         }
       })
+      higherDiff.sort(function(a, b) {
+        return b.percentageDiff - a.percentageDiff;
+      });
       setDiffPrice(higherDiff);
-      console.log(higherDiff);
     }
   }, [binancePrice, pancakePrice])
 
@@ -117,8 +83,8 @@ const BinanceCalculator = (props) => {
           <div style={{display: 'flex', flexDirection: 'row'}}>
             <h6 style={{margin: 10, width: '15vw'}}>{item.name}</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.pancakePrice}</h6>
-            <h6 style={{margin: 10, width: '15vw'}}>{item.bitmartPrice ? item.bitmartPrice : item.binancePrice}</h6>
-            <h6 style={{margin: 10, width: '15vw'}}>{parseInt(item.percentageDiff)}%</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>{item.binancePrice}</h6>
+            <h6 style={{margin: 10, width: '15vw', color: `${item.percentageDiff >= 50 ? '#5fff0d' : 'white'}`}}>{parseInt(item.percentageDiff)}%</h6>
           </div>
           )
         })}

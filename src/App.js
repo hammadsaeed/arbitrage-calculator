@@ -10,14 +10,13 @@ const firstList = ['Pancake'];
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [first, setFirst] = useState('Pancake');
+  const [setFirst] = useState('Pancake');
   const [second, setSecond] = useState('Bitmart');
 
 
   const handleLoading = () => {
     setLoading(false);
   }
-  console.log(second)
 
   return (
     <div className="App">
@@ -29,7 +28,10 @@ function App() {
           ))}
         </select>
         <h6 style={{margin: 0}}> -> </h6>
-        <select onChange={e => setSecond(e.target.value)}>
+        <select onChange={e => {
+          setSecond(e.target.value)
+          setLoading(true);
+          }}>
           {secondList.map((item) => (
             <option value={item}>{item}</option>
           ))}

@@ -41,6 +41,7 @@ const PriceCalculator = (props) => {
     if(bitMartPrice.length && pancakePrice.length) {
       const matches = [];
       const higherDiff = [];
+      // eslint-disable-next-line array-callback-return
       pancakePrice.map((pancakeItem) => {
         for(let i = 0; i < bitMartPrice.length; i++) {          
           // if(bitMartPrice[i].symbol.includes(pancakeItem.symbol.toUpperCase())) {
