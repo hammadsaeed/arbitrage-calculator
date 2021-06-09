@@ -69,6 +69,9 @@ const PriceCalculator = (props) => {
 
         }
       })
+      higherDiff.sort(function(a, b) {
+        return b.percentageDiff - a.percentageDiff;
+      });
       setDiffPrice(higherDiff);
     }
   }, [bitMartPrice, pancakePrice])
@@ -89,7 +92,7 @@ const PriceCalculator = (props) => {
             <h6 style={{margin: 10, width: '15vw'}}>{item.name}</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.pancakePrice}</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.bitmartPrice}</h6>
-            <h6 style={{margin: 10, width: '15vw'}}>{parseInt(item.percentageDiff)}%</h6>
+            <h6 style={{margin: 10, width: '15vw', color: `${item.percentageDiff >= 50 ? '#5fff0d' : 'white'}`}}>{parseInt(item.percentageDiff)}%</h6>
           </div>
           )
         })}
