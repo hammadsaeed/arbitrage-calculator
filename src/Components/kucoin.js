@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import GetPrice from '../Services/get-response';
 
 const PancakeURL = 'https://api.pancakeswap.info/api/v2/tokens';
-const BinanceURL = 'https://api.binance.com/api/v3/ticker/price';
+const kucoinURL = 'https://api.kucoin.com/api/v1/market/allTickers';
 
-const BinanceCalculator = (props) => {
+const Kucoin = (props) => {
   const {handleLoading, diff} = props;
   const [pancakePrice, setPacncakePrice] = useState([]);
-  const [binancePrice, setBinancePrice] = useState([]);
+  const [kucoinPrice, setKucoinPrice] = useState([]);
 
   const [diffPrice, setDiffPrice] = useState([]);
 
@@ -27,8 +27,8 @@ const BinanceCalculator = (props) => {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await GetPrice.getBinance(BinanceURL);
-        setBinancePrice(response.filterData);
+        const response = await GetPrice.getKucoin(kucoinURL);
+        setKucoinPrice(response.filterData);
 
       } catch (error) {
         console.error(error.message);
@@ -38,23 +38,25 @@ const BinanceCalculator = (props) => {
   }, [])
 
   useEffect(() => {
-    if(binancePrice.length && pancakePrice.length) {
+    if(kucoinPrice.length && pancakePrice.length) {
       const higherDiff = [];
       // eslint-disable-next-line array-callback-return
       pancakePrice.map((pancakeItem) => {
-        for(let i = 0; i < binancePrice.length; i++) {          
-          if(pancakeItem.symbol.toUpperCase() === binancePrice[i].symbol.split('USD')[0] ) {
+        for(let i = 0; i < kucoinPrice.length; i++) {      
+          if(pancakeItem.symbol.toUpperCase() === kucoinPrice[i].symbol.split('-USDT')[0] ) {
             const panCakePriceItem = parseFloat(pancakeItem.price);
-            const binancePriceItem = parseFloat(binancePrice[i]['price']);
-            const percentageDiff = ((binancePriceItem/panCakePriceItem) * 100) - 100;
-            if(percentageDiff > diff) {
+            const kucoinPriceItem = parseFloat(kucoinPrice[i]['buy']);
+            const percentageDiff = ((kucoinPriceItem/panCakePriceItem) * 100) - 100;
+            const percentageDiffInverse = ((panCakePriceItem/kucoinPriceItem) * 100) - 100;
+
+            if(percentageDiff > diff || percentageDiffInverse > diff) {
               higherDiff.push({
                 name: pancakeItem.name,
-                otherSymbol: binancePrice[i].symbol,
+                otherSymbol: kucoinPrice[i].symbol,
                 symbol: pancakeItem.symbol,
                 pancakePrice: parseFloat(pancakeItem.price),
-                binancePrice: parseFloat(binancePrice[i]['price']),
-                percentageDiff,
+                kucoinPrice: parseFloat(kucoinPrice[i]['buy']),
+                percentageDiff: percentageDiff > diff ? percentageDiff : -percentageDiffInverse,
               });
             }
             break
@@ -67,7 +69,7 @@ const BinanceCalculator = (props) => {
       });
       setDiffPrice(higherDiff);
     }
-  }, [binancePrice, pancakePrice, diff])
+  }, [kucoinPrice, pancakePrice, diff])
 
   if(diffPrice.length) {
     handleLoading();
@@ -84,7 +86,7 @@ const BinanceCalculator = (props) => {
           <div style={{display: 'flex', flexDirection: 'row'}}>
             <h6 style={{margin: 10, width: '25vw'}}>{item.name}({item.symbol} | {item.otherSymbol})</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.pancakePrice}</h6>
-            <h6 style={{margin: 10, width: '15vw'}}>{item.binancePrice}</h6>
+            <h6 style={{margin: 10, width: '15vw'}}>{item.kucoinPrice}</h6>
             <h6 style={{margin: 10, width: '15vw', color: `${item.percentageDiff >= 50 ? '#5fff0d' : 'white'}`}}>{parseInt(item.percentageDiff)}%</h6>
           </div>
           )
@@ -95,4 +97,4 @@ const BinanceCalculator = (props) => {
   return <></>;
 }
 
-export default BinanceCalculator;
+export default Kucoin;
