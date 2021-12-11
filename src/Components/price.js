@@ -5,10 +5,9 @@ const BitMartURL = 'https://api-cloud.bitmart.com/spot/v1/ticker';
 const PancakeURL = 'https://api.pancakeswap.info/api/v2/tokens';
 
 const PriceCalculator = (props) => {
-  const {handleLoading} = props;
+  const {handleLoading, diff} = props;
   const [bitMartPrice, setBitmartPrice] = useState([]);
   const [pancakePrice, setPacncakePrice] = useState([]);
-
   const [diffPrice, setDiffPrice] = useState([]);
 
 
@@ -56,9 +55,10 @@ const PriceCalculator = (props) => {
               bitmartPrice: parseFloat(bitMartPrice[i]['last_price']),
               percentageDiff,
             });
-            if(percentageDiff > 8) {
+            if(percentageDiff > diff) {
               higherDiff.push({
                 name: pancakeItem.name,
+                otherSymbol: bitMartPrice[i].symbol,
                 symbol: pancakeItem.symbol,
                 pancakePrice: parseFloat(pancakeItem.price),
                 bitmartPrice: parseFloat(bitMartPrice[i]['last_price']),
@@ -75,7 +75,7 @@ const PriceCalculator = (props) => {
       });
       setDiffPrice(higherDiff);
     }
-  }, [bitMartPrice, pancakePrice])
+  }, [bitMartPrice, pancakePrice, diff])
 
   if(diffPrice.length) {
     handleLoading();
@@ -90,7 +90,7 @@ const PriceCalculator = (props) => {
         {diffPrice.map((item) => {
           return(
           <div style={{display: 'flex', flexDirection: 'row'}}>
-            <h6 style={{margin: 10, width: '15vw'}}>{item.name}</h6>
+            <h6 style={{margin: 10, width: '25vw'}}>{item.name}({item.symbol} | {item.otherSymbol})</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.pancakePrice}</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.bitmartPrice}</h6>
             <h6 style={{margin: 10, width: '15vw', color: `${item.percentageDiff >= 50 ? '#5fff0d' : 'white'}`}}>{parseInt(item.percentageDiff)}%</h6>

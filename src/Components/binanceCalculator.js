@@ -5,7 +5,7 @@ const PancakeURL = 'https://api.pancakeswap.info/api/v2/tokens';
 const BinanceURL = 'https://api.binance.com/api/v3/ticker/price';
 
 const BinanceCalculator = (props) => {
-  const {handleLoading} = props;
+  const {handleLoading, diff} = props;
   const [pancakePrice, setPacncakePrice] = useState([]);
   const [binancePrice, setBinancePrice] = useState([]);
 
@@ -47,9 +47,10 @@ const BinanceCalculator = (props) => {
             const panCakePriceItem = parseFloat(pancakeItem.price);
             const binancePriceItem = parseFloat(binancePrice[i]['price']);
             const percentageDiff = ((binancePriceItem/panCakePriceItem) * 100) - 100;
-            if(percentageDiff > 8) {
+            if(percentageDiff > diff) {
               higherDiff.push({
                 name: pancakeItem.name,
+                otherSymbol: binancePrice[i].symbol,
                 symbol: pancakeItem.symbol,
                 pancakePrice: parseFloat(pancakeItem.price),
                 binancePrice: parseFloat(binancePrice[i]['price']),
@@ -66,7 +67,7 @@ const BinanceCalculator = (props) => {
       });
       setDiffPrice(higherDiff);
     }
-  }, [binancePrice, pancakePrice])
+  }, [binancePrice, pancakePrice, diff])
 
   if(diffPrice.length) {
     handleLoading();
@@ -81,7 +82,7 @@ const BinanceCalculator = (props) => {
         {diffPrice.map((item) => {
           return(
           <div style={{display: 'flex', flexDirection: 'row'}}>
-            <h6 style={{margin: 10, width: '15vw'}}>{item.name}</h6>
+            <h6 style={{margin: 10, width: '25vw'}}>{item.name}({item.symbol} | {item.otherSymbol})</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.pancakePrice}</h6>
             <h6 style={{margin: 10, width: '15vw'}}>{item.binancePrice}</h6>
             <h6 style={{margin: 10, width: '15vw', color: `${item.percentageDiff >= 50 ? '#5fff0d' : 'white'}`}}>{parseInt(item.percentageDiff)}%</h6>
