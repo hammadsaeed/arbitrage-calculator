@@ -28,7 +28,6 @@ const Kucoin = (props) => {
     async function getData() {
       try {
         const response = await GetPrice.getKucoin(kucoinURL);
-        console.log(response);
         setKucoinPrice(response.filterData);
 
       } catch (error) {
@@ -50,7 +49,6 @@ const Kucoin = (props) => {
             const percentageDiff = ((kucoinPriceItem/panCakePriceItem) * 100) - 100;
             const percentageDiffInverse = ((panCakePriceItem/kucoinPriceItem) * 100) - 100;
 
-            console.log(panCakePriceItem, kucoinPriceItem, percentageDiff)
             if(percentageDiff > diff || percentageDiffInverse > diff) {
               higherDiff.push({
                 name: pancakeItem.name,
@@ -66,7 +64,6 @@ const Kucoin = (props) => {
 
         }
       })
-      console.log(higherDiff)
       higherDiff.sort(function(a, b) {
         return b.percentageDiff - a.percentageDiff;
       });
